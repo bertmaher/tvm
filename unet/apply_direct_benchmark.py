@@ -73,7 +73,8 @@ def conv2d_NCHW_direct_autotvm(s, ic, oc, kernel, pad, stride):
 WORKLOADS = [
         # Workload('float32', 'float32', 224, 224, 3, 64, 7, 7, 3, 3, 2, 2),
         # Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 0, 0, 1, 1),
-        Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 1, 1, 1, 1),
+        # Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 1, 1, 1, 1),
+        Workload('float32', 'float32', 64, 64, 64, 64, 3, 3, 1, 1, 1, 1),
     
         # Workload('float32', 'float32', 56, 56, 64, 64, 1, 1, 0, 0, 1, 1),
         # Workload('float32', 'float32', 56, 56, 64, 128, 3, 3, 1, 1, 2, 2),
@@ -169,3 +170,4 @@ def run(layout,
         print(f"gflops = {flops / evaluator(a_tvm, w_tvm, c_tvm).mean / 1e9:.2f}")
 if __name__ == "__main__":
     run()
+w
