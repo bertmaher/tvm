@@ -366,6 +366,7 @@ def _schedule_spatial_pack_NCHWc(cfg, s, output, last):
     """schedule implementation"""
     # import ipdb
     # ipdb.set_trace()
+    print(cfg)
     conv = output.op.input_tensors[0]
     data_vec = conv.op.input_tensors[0]
     data_pad = data_vec.op.input_tensors[0]

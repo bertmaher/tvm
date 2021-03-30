@@ -1,6 +1,7 @@
 from __future__ import division
 
 import click
+import topi.nn
 from topi.util import get_const_int, const_matrix
 from topi.nn.conv2d import Workload
 import numpy as np
@@ -27,10 +28,12 @@ def conv2d_NCHWc_direct_autotvm(s, ic, oc, kernel, pad, stride):
     X = tvm.placeholder(shape=(1, ic // BNInput, s, s, BNInput), dtype="float32", name="X")
     W = tvm.placeholder(shape=(oc // BNOutput, ic // BNInput, kernel, kernel, BNInput, BNOutput), dtype="float32", name="W")
 
-    Y = unet_conv2d._decl_spatial_pack_NCHWc(cfg, X, W, num_filter=oc, kernel_size=kernel, stride=stride, padding=pad, layout="NCHW{}c".format(BNInput), out_layout="NCHW{}c".format(BNOutput), out_dtype="float32")
+    conv = unet_conv2d._decl_spatial_pack_NCHWc(cfg, X, W, num_filter=oc, kernel_size=kernel, stride=stride, padding=pad, layout="NCHW{}c".format(BNInput), out_layout="NCHW{}c".format(BNOutput), out_dtype="float32")
+    Y = topi.nn.relu(conv)
     
     s = tvm.create_schedule([Y.op])
-    s = unet_conv2d._schedule_spatial_pack_NCHWc(cfg, s, Y, Y)
+    print(tvm.lower(s, [X, W, Y], simple_mode=True))
+    s = unet_conv2d._schedule_spatial_pack_NCHWc(cfg, s, conv, Y)
     print(tvm.lower(s, [X, W, Y], simple_mode=True))
     return s, [X, W, Y]
 
@@ -43,7 +46,6 @@ def conv2d_NCHW_direct_autotvm(s, ic, oc, kernel, pad, stride):
     X = tvm.placeholder(shape=(1, s, s, ic), dtype="float32", name="X")
     W = tvm.placeholder(shape=(oc, ic, kernel, kernel), dtype="float32", name="W")
     Y = unet_conv2d._decl_spatial_pack(cfg, X, W, stride, pad, layout="NCHW", out_dtype="float32", num_tile=2)
-
     conv = Y.op.input_tensors[0]
 
     data_vec = conv.op.input_tensors[0]
@@ -71,8 +73,7 @@ def conv2d_NCHW_direct_autotvm(s, ic, oc, kernel, pad, stride):
 WORKLOADS = [
         # Workload('float32', 'float32', 224, 224, 3, 64, 7, 7, 3, 3, 2, 2),
         # Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 0, 0, 1, 1),
-        # Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 1, 1, 1, 1),
-        Workload('float32', 'float32', 64, 64, 64, 64, 3, 3, 1, 1, 1, 1),
+        Workload('float32', 'float32', 56, 56, 64, 64, 3, 3, 1, 1, 1, 1),
     
         # Workload('float32', 'float32', 56, 56, 64, 64, 1, 1, 0, 0, 1, 1),
         # Workload('float32', 'float32', 56, 56, 64, 128, 3, 3, 1, 1, 2, 2),
@@ -151,41 +152,12 @@ def run(layout,
     for i, w in enumerate(WORKLOADS):
         if w.in_filter % 16 != 0 or w.out_filter % 16 != 0:
             continue
-        measure_option=autotvm.measure_option(
-            builder=autotvm.LocalBuilder(timeout=10),
-            runner=autotvm.RPCRunner(
-                'skl', 'localhost', tracker_port,
-                number=autotvm_number,
-                repeat=autotvm_repeat,
-                timeout=10) if not local else
-            autotvm.LocalRunner(
-                timeout=10,
-                number=autotvm_number,
-                repeat=autotvm_repeat)
-        )
 
-        task = autotvm.task.create(
-            conv2d_NCHWc_direct_autotvm if layout == "NCHWc" else conv2d_NCHW_direct_autotvm,
-            args=(w.height, w.in_filter, w.out_filter, w.hkernel, w.hpad, w.hstride),
-            target=tvm.target.create(target if not local else local_target))
-        print(task.config_space)
-        tuner = autotvm.tuner.XGBTuner(task, feature_type="knob")
-        tuner.tune(
-            n_trial=autotvm_n_trial,
-            measure_option=measure_option,
-            callbacks=[
-                autotvm.callback.progress_bar(
-                    autotvm_n_trial,
-                    prefix="{w.height}S, {w.in_filter} -> {w.out_filter}, {w.hkernel}K, {w.hpad}P, {w.hstride}s, {layout}".format(w=w, layout=layout)),
-                autotvm.callback.log_to_file(str(autotvm_log))])
-
-        autotvm.record.pick_best(autotvm_log, "the_best_yet.log")
-        
         ctx = tvm.context(local_target, 0)
         with autotvm.apply_history_best(str(autotvm_log)):
             with tvm.target.create(local_target):
                 s, args = conv2d_NCHWc_direct_autotvm(w.height, w.in_filter, w.out_filter, w.hkernel, w.hpad, w.hstride)
-                print(tvm.lower(s, args, simple_mode=True))
+                #print(tvm.lower(s, args, simple_mode=True))
                 func = tvm.build(s, args, target=local_target)
             
         a_tvm = tvm.nd.array(np.random.rand(1, w.in_filter // 16, w.height, w.width, 16).astype(np.float32), ctx=ctx)

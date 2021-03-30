@@ -15,7 +15,8 @@ import time
 import click
 import logging
 
-target = 'llvm -mcpu=core-avx2'
+target = 'llvm -mcpu=skylake-avx512 -target=x86_64-linux-gnu'
+
 ctx = tvm.context(str(target), 0)
 
 @click.command()

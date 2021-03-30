@@ -39,6 +39,7 @@ def run(align,
     tracker = tvm.rpc.connect_tracker('localhost', 9195)
     remote = tracker.request('skl')
 
+    print("applying history")
     with autotvm.apply_history_best(str(autotvm_log)):
         sym, image_shape, output_shape = models.get_mxnet_symbol(model, align)
         data_shape = tuple([1] + list(image_shape))
@@ -49,15 +50,17 @@ def run(align,
 
     out_shape = tuple([1] + list(output_shape))
 
-
+    print("here")
     tmp = tvm.contrib.util.tempdir()
     lib_fname = tmp.relpath('net.tar')
     with tvm.target.create(target):
         lib.export_library(lib_fname)
+    print("there")
     remote.upload(lib_fname)
     rlib = remote.load_module('net.tar')
     ctx = remote.cpu(0)
-
+    print("everywhere")
+    
     module = graph_runtime.create(graph, rlib, ctx)
     logging.debug(graph.symbol().debug_str())
     with open("apply_tuned.log", "w") as f:

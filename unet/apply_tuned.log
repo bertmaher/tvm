@@ -1,0 +1,972 @@
+Symbol Outputs:
+	output[0]=softmax0(0)
+Variable:data
+Variable:batch_norm0_div_expand
+Variable:batch_norm0_add_beta_expand
+--------------------
+Op:tvm_op, Name=batch_norm0_NCHW3c
+Inputs:
+	arg[0]=data(0) version=0
+	arg[1]=batch_norm0_div_expand(0) version=0
+	arg[2]=batch_norm0_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_copy_broadcast_mul_broadcast_add___layout_transform__
+	num_inputs=3
+	num_outputs=1
+Variable:conv0_weight_OIHW3i16o
+Variable:batch_norm1_gamma_mul_div_expand
+Variable:batch_norm1_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu0
+Inputs:
+	arg[0]=batch_norm0_NCHW3c(0)
+	arg[1]=conv0_weight_OIHW3i16o(0) version=0
+	arg[2]=batch_norm1_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm1_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu
+	num_inputs=4
+	num_outputs=1
+Variable:batch_norm2_gamma_mul_div_expand
+Variable:batch_norm2_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu1
+Inputs:
+	arg[0]=relu0(0)
+	arg[1]=batch_norm2_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm2_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_max_pool2d_broadcast_mul_broadcast_add_relu
+	num_inputs=3
+	num_outputs=1
+Variable:stage1_unit1_conv1_weight_OIHW16i16o
+Variable:batch_norm3_gamma_mul_div_expand
+Variable:batch_norm3_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu2
+Inputs:
+	arg[0]=relu1(0)
+	arg[1]=stage1_unit1_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm3_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm3_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_1
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit1_conv2_weight_OIHW16i16o
+Variable:batch_norm4_gamma_mul_div_expand
+Variable:batch_norm4_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu3
+Inputs:
+	arg[0]=relu2(0)
+	arg[1]=stage1_unit1_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm4_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm4_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_2
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit1_conv3_weight_OIHW16i16o
+Variable:stage1_unit1_sc_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=_contrib_conv2d_nchwc4
+Inputs:
+	arg[0]=relu1(0)
+	arg[1]=stage1_unit1_sc_weight_OIHW16i16o(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc
+	num_inputs=2
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=elemwise_add0
+Inputs:
+	arg[0]=relu3(0)
+	arg[1]=stage1_unit1_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=_contrib_conv2d_nchwc4(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm5_gamma_mul_div_expand
+Variable:batch_norm5_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu4
+Inputs:
+	arg[0]=elemwise_add0(0)
+	arg[1]=batch_norm5_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm5_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu
+	num_inputs=3
+	num_outputs=1
+Variable:stage1_unit2_conv1_weight_OIHW16i16o
+Variable:batch_norm6_gamma_mul_div_expand
+Variable:batch_norm6_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu5
+Inputs:
+	arg[0]=relu4(0)
+	arg[1]=stage1_unit2_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm6_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm6_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_3
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit2_conv2_weight_OIHW16i16o
+Variable:batch_norm7_gamma_mul_div_expand
+Variable:batch_norm7_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu6
+Inputs:
+	arg[0]=relu5(0)
+	arg[1]=stage1_unit2_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm7_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm7_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_2
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit2_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add1
+Inputs:
+	arg[0]=relu6(0)
+	arg[1]=stage1_unit2_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add0(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm8_gamma_mul_div_expand
+Variable:batch_norm8_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu7
+Inputs:
+	arg[0]=elemwise_add1(0)
+	arg[1]=batch_norm8_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm8_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu
+	num_inputs=3
+	num_outputs=1
+Variable:stage1_unit3_conv1_weight_OIHW16i16o
+Variable:batch_norm9_gamma_mul_div_expand
+Variable:batch_norm9_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu8
+Inputs:
+	arg[0]=relu7(0)
+	arg[1]=stage1_unit3_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm9_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm9_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_3
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit3_conv2_weight_OIHW16i16o
+Variable:batch_norm10_gamma_mul_div_expand
+Variable:batch_norm10_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu9
+Inputs:
+	arg[0]=relu8(0)
+	arg[1]=stage1_unit3_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm10_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm10_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_2
+	num_inputs=4
+	num_outputs=1
+Variable:stage1_unit3_conv3_weight_OIHW16i16o
+Variable:batch_norm11_gamma_mul_div_expand
+Variable:batch_norm11_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu10
+Inputs:
+	arg[0]=relu9(0)
+	arg[1]=stage1_unit3_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add1(0)
+	arg[3]=batch_norm11_gamma_mul_div_expand(0) version=0
+	arg[4]=batch_norm11_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_broadcast_mul_broadcast_add_relu
+	num_inputs=5
+	num_outputs=1
+Variable:stage2_unit1_conv1_weight_OIHW16i16o
+Variable:batch_norm12_gamma_mul_div_expand
+Variable:batch_norm12_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu11
+Inputs:
+	arg[0]=relu10(0)
+	arg[1]=stage2_unit1_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm12_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm12_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_4
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit1_conv2_weight_OIHW16i16o
+Variable:batch_norm13_gamma_mul_div_expand
+Variable:batch_norm13_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu12
+Inputs:
+	arg[0]=relu11(0)
+	arg[1]=stage2_unit1_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm13_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm13_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_5
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit1_conv3_weight_OIHW16i16o
+Variable:stage2_unit1_sc_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=_contrib_conv2d_nchwc14
+Inputs:
+	arg[0]=relu10(0)
+	arg[1]=stage2_unit1_sc_weight_OIHW16i16o(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_1
+	num_inputs=2
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=elemwise_add3
+Inputs:
+	arg[0]=relu12(0)
+	arg[1]=stage2_unit1_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=_contrib_conv2d_nchwc14(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_1
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm14_gamma_mul_div_expand
+Variable:batch_norm14_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu13
+Inputs:
+	arg[0]=elemwise_add3(0)
+	arg[1]=batch_norm14_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm14_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_1
+	num_inputs=3
+	num_outputs=1
+Variable:stage2_unit2_conv1_weight_OIHW16i16o
+Variable:batch_norm15_gamma_mul_div_expand
+Variable:batch_norm15_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu14
+Inputs:
+	arg[0]=relu13(0)
+	arg[1]=stage2_unit2_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm15_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm15_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_6
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit2_conv2_weight_OIHW16i16o
+Variable:batch_norm16_gamma_mul_div_expand
+Variable:batch_norm16_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu15
+Inputs:
+	arg[0]=relu14(0)
+	arg[1]=stage2_unit2_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm16_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm16_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_7
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit2_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add4
+Inputs:
+	arg[0]=relu15(0)
+	arg[1]=stage2_unit2_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add3(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_1
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm17_gamma_mul_div_expand
+Variable:batch_norm17_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu16
+Inputs:
+	arg[0]=elemwise_add4(0)
+	arg[1]=batch_norm17_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm17_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_1
+	num_inputs=3
+	num_outputs=1
+Variable:stage2_unit3_conv1_weight_OIHW16i16o
+Variable:batch_norm18_gamma_mul_div_expand
+Variable:batch_norm18_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu17
+Inputs:
+	arg[0]=relu16(0)
+	arg[1]=stage2_unit3_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm18_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm18_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_6
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit3_conv2_weight_OIHW16i16o
+Variable:batch_norm19_gamma_mul_div_expand
+Variable:batch_norm19_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu18
+Inputs:
+	arg[0]=relu17(0)
+	arg[1]=stage2_unit3_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm19_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm19_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_7
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit3_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add5
+Inputs:
+	arg[0]=relu18(0)
+	arg[1]=stage2_unit3_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add4(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_1
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm20_gamma_mul_div_expand
+Variable:batch_norm20_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu19
+Inputs:
+	arg[0]=elemwise_add5(0)
+	arg[1]=batch_norm20_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm20_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_1
+	num_inputs=3
+	num_outputs=1
+Variable:stage2_unit4_conv1_weight_OIHW16i16o
+Variable:batch_norm21_gamma_mul_div_expand
+Variable:batch_norm21_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu20
+Inputs:
+	arg[0]=relu19(0)
+	arg[1]=stage2_unit4_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm21_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm21_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_6
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit4_conv2_weight_OIHW16i16o
+Variable:batch_norm22_gamma_mul_div_expand
+Variable:batch_norm22_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu21
+Inputs:
+	arg[0]=relu20(0)
+	arg[1]=stage2_unit4_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm22_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm22_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_7
+	num_inputs=4
+	num_outputs=1
+Variable:stage2_unit4_conv3_weight_OIHW16i16o
+Variable:batch_norm23_gamma_mul_div_expand
+Variable:batch_norm23_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu22
+Inputs:
+	arg[0]=relu21(0)
+	arg[1]=stage2_unit4_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add5(0)
+	arg[3]=batch_norm23_gamma_mul_div_expand(0) version=0
+	arg[4]=batch_norm23_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_broadcast_mul_broadcast_add_relu_1
+	num_inputs=5
+	num_outputs=1
+Variable:stage3_unit1_conv1_weight_OIHW16i16o
+Variable:batch_norm24_gamma_mul_div_expand
+Variable:batch_norm24_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu23
+Inputs:
+	arg[0]=relu22(0)
+	arg[1]=stage3_unit1_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm24_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm24_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_8
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit1_conv2_weight_OIHW16i16o
+Variable:batch_norm25_gamma_mul_div_expand
+Variable:batch_norm25_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu24
+Inputs:
+	arg[0]=relu23(0)
+	arg[1]=stage3_unit1_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm25_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm25_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_9
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit1_conv3_weight_OIHW16i16o
+Variable:stage3_unit1_sc_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=_contrib_conv2d_nchwc27
+Inputs:
+	arg[0]=relu22(0)
+	arg[1]=stage3_unit1_sc_weight_OIHW16i16o(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_2
+	num_inputs=2
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=elemwise_add7
+Inputs:
+	arg[0]=relu24(0)
+	arg[1]=stage3_unit1_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=_contrib_conv2d_nchwc27(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_2
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm26_gamma_mul_div_expand
+Variable:batch_norm26_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu25
+Inputs:
+	arg[0]=elemwise_add7(0)
+	arg[1]=batch_norm26_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm26_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_2
+	num_inputs=3
+	num_outputs=1
+Variable:stage3_unit2_conv1_weight_OIHW16i16o
+Variable:batch_norm27_gamma_mul_div_expand
+Variable:batch_norm27_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu26
+Inputs:
+	arg[0]=relu25(0)
+	arg[1]=stage3_unit2_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm27_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm27_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_10
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit2_conv2_weight_OIHW16i16o
+Variable:batch_norm28_gamma_mul_div_expand
+Variable:batch_norm28_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu27
+Inputs:
+	arg[0]=relu26(0)
+	arg[1]=stage3_unit2_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm28_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm28_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_11
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit2_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add8
+Inputs:
+	arg[0]=relu27(0)
+	arg[1]=stage3_unit2_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add7(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_2
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm29_gamma_mul_div_expand
+Variable:batch_norm29_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu28
+Inputs:
+	arg[0]=elemwise_add8(0)
+	arg[1]=batch_norm29_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm29_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_2
+	num_inputs=3
+	num_outputs=1
+Variable:stage3_unit3_conv1_weight_OIHW16i16o
+Variable:batch_norm30_gamma_mul_div_expand
+Variable:batch_norm30_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu29
+Inputs:
+	arg[0]=relu28(0)
+	arg[1]=stage3_unit3_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm30_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm30_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_10
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit3_conv2_weight_OIHW16i16o
+Variable:batch_norm31_gamma_mul_div_expand
+Variable:batch_norm31_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu30
+Inputs:
+	arg[0]=relu29(0)
+	arg[1]=stage3_unit3_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm31_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm31_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_11
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit3_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add9
+Inputs:
+	arg[0]=relu30(0)
+	arg[1]=stage3_unit3_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add8(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_2
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm32_gamma_mul_div_expand
+Variable:batch_norm32_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu31
+Inputs:
+	arg[0]=elemwise_add9(0)
+	arg[1]=batch_norm32_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm32_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_2
+	num_inputs=3
+	num_outputs=1
+Variable:stage3_unit4_conv1_weight_OIHW16i16o
+Variable:batch_norm33_gamma_mul_div_expand
+Variable:batch_norm33_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu32
+Inputs:
+	arg[0]=relu31(0)
+	arg[1]=stage3_unit4_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm33_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm33_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_10
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit4_conv2_weight_OIHW16i16o
+Variable:batch_norm34_gamma_mul_div_expand
+Variable:batch_norm34_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu33
+Inputs:
+	arg[0]=relu32(0)
+	arg[1]=stage3_unit4_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm34_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm34_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_11
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit4_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add10
+Inputs:
+	arg[0]=relu33(0)
+	arg[1]=stage3_unit4_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add9(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_2
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm35_gamma_mul_div_expand
+Variable:batch_norm35_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu34
+Inputs:
+	arg[0]=elemwise_add10(0)
+	arg[1]=batch_norm35_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm35_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_2
+	num_inputs=3
+	num_outputs=1
+Variable:stage3_unit5_conv1_weight_OIHW16i16o
+Variable:batch_norm36_gamma_mul_div_expand
+Variable:batch_norm36_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu35
+Inputs:
+	arg[0]=relu34(0)
+	arg[1]=stage3_unit5_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm36_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm36_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_10
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit5_conv2_weight_OIHW16i16o
+Variable:batch_norm37_gamma_mul_div_expand
+Variable:batch_norm37_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu36
+Inputs:
+	arg[0]=relu35(0)
+	arg[1]=stage3_unit5_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm37_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm37_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_11
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit5_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add11
+Inputs:
+	arg[0]=relu36(0)
+	arg[1]=stage3_unit5_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add10(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_2
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm38_gamma_mul_div_expand
+Variable:batch_norm38_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu37
+Inputs:
+	arg[0]=elemwise_add11(0)
+	arg[1]=batch_norm38_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm38_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_2
+	num_inputs=3
+	num_outputs=1
+Variable:stage3_unit6_conv1_weight_OIHW16i16o
+Variable:batch_norm39_gamma_mul_div_expand
+Variable:batch_norm39_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu38
+Inputs:
+	arg[0]=relu37(0)
+	arg[1]=stage3_unit6_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm39_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm39_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_10
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit6_conv2_weight_OIHW16i16o
+Variable:batch_norm40_gamma_mul_div_expand
+Variable:batch_norm40_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu39
+Inputs:
+	arg[0]=relu38(0)
+	arg[1]=stage3_unit6_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm40_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm40_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_11
+	num_inputs=4
+	num_outputs=1
+Variable:stage3_unit6_conv3_weight_OIHW16i16o
+Variable:batch_norm41_gamma_mul_div_expand
+Variable:batch_norm41_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu40
+Inputs:
+	arg[0]=relu39(0)
+	arg[1]=stage3_unit6_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add11(0)
+	arg[3]=batch_norm41_gamma_mul_div_expand(0) version=0
+	arg[4]=batch_norm41_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_broadcast_mul_broadcast_add_relu_2
+	num_inputs=5
+	num_outputs=1
+Variable:stage4_unit1_conv1_weight_OIHW16i16o
+Variable:batch_norm42_gamma_mul_div_expand
+Variable:batch_norm42_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu41
+Inputs:
+	arg[0]=relu40(0)
+	arg[1]=stage4_unit1_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm42_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm42_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_12
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit1_conv2_weight_OIHW16i16o
+Variable:batch_norm43_gamma_mul_div_expand
+Variable:batch_norm43_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu42
+Inputs:
+	arg[0]=relu41(0)
+	arg[1]=stage4_unit1_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm43_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm43_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_13
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit1_conv3_weight_OIHW16i16o
+Variable:stage4_unit1_sc_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=_contrib_conv2d_nchwc46
+Inputs:
+	arg[0]=relu40(0)
+	arg[1]=stage4_unit1_sc_weight_OIHW16i16o(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_3
+	num_inputs=2
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=elemwise_add13
+Inputs:
+	arg[0]=relu42(0)
+	arg[1]=stage4_unit1_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=_contrib_conv2d_nchwc46(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_3
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm44_gamma_mul_div_expand
+Variable:batch_norm44_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu43
+Inputs:
+	arg[0]=elemwise_add13(0)
+	arg[1]=batch_norm44_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm44_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_3
+	num_inputs=3
+	num_outputs=1
+Variable:stage4_unit2_conv1_weight_OIHW16i16o
+Variable:batch_norm45_gamma_mul_div_expand
+Variable:batch_norm45_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu44
+Inputs:
+	arg[0]=relu43(0)
+	arg[1]=stage4_unit2_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm45_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm45_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_14
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit2_conv2_weight_OIHW16i16o
+Variable:batch_norm46_gamma_mul_div_expand
+Variable:batch_norm46_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu45
+Inputs:
+	arg[0]=relu44(0)
+	arg[1]=stage4_unit2_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm46_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm46_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_15
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit2_conv3_weight_OIHW16i16o
+--------------------
+Op:tvm_op, Name=elemwise_add14
+Inputs:
+	arg[0]=relu45(0)
+	arg[1]=stage4_unit2_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add13(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_3
+	num_inputs=3
+	num_outputs=1
+Variable:batch_norm47_gamma_mul_div_expand
+Variable:batch_norm47_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu46
+Inputs:
+	arg[0]=elemwise_add14(0)
+	arg[1]=batch_norm47_gamma_mul_div_expand(0) version=0
+	arg[2]=batch_norm47_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_broadcast_mul_broadcast_add_relu_3
+	num_inputs=3
+	num_outputs=1
+Variable:stage4_unit3_conv1_weight_OIHW16i16o
+Variable:batch_norm48_gamma_mul_div_expand
+Variable:batch_norm48_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu47
+Inputs:
+	arg[0]=relu46(0)
+	arg[1]=stage4_unit3_conv1_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm48_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm48_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_14
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit3_conv2_weight_OIHW16i16o
+Variable:batch_norm49_gamma_mul_div_expand
+Variable:batch_norm49_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu48
+Inputs:
+	arg[0]=relu47(0)
+	arg[1]=stage4_unit3_conv2_weight_OIHW16i16o(0) version=0
+	arg[2]=batch_norm49_gamma_mul_div_expand(0) version=0
+	arg[3]=batch_norm49_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_broadcast_mul_broadcast_add_relu_15
+	num_inputs=4
+	num_outputs=1
+Variable:stage4_unit3_conv3_weight_OIHW16i16o
+Variable:batch_norm50_gamma_mul_div_expand
+Variable:batch_norm50_add_beta_expand
+--------------------
+Op:tvm_op, Name=relu49
+Inputs:
+	arg[0]=relu48(0)
+	arg[1]=stage4_unit3_conv3_weight_OIHW16i16o(0) version=0
+	arg[2]=elemwise_add14(0)
+	arg[3]=batch_norm50_gamma_mul_div_expand(0) version=0
+	arg[4]=batch_norm50_add_beta_expand(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse__contrib_conv2d_NCHWc_elemwise_add_broadcast_mul_broadcast_add_relu_3
+	num_inputs=5
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=global_avg_pool2d0
+Inputs:
+	arg[0]=relu49(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse_global_avg_pool2d
+	num_inputs=1
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=flatten1
+Inputs:
+	arg[0]=global_avg_pool2d0(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse___layout_transform___flatten_flatten
+	num_inputs=1
+	num_outputs=1
+Variable:fc1_weight
+Variable:fc1_bias
+--------------------
+Op:tvm_op, Name=dense0
+Inputs:
+	arg[0]=flatten1(0)
+	arg[1]=fc1_weight(0) version=0
+	arg[2]=fc1_bias(0) version=0
+Attrs:
+	flatten_data=0
+	func_name=fuse_dense
+	num_inputs=3
+	num_outputs=1
+--------------------
+Op:tvm_op, Name=softmax0
+Inputs:
+	arg[0]=dense0(0)
+Attrs:
+	flatten_data=0
+	func_name=fuse_softmax
+	num_inputs=1
+	num_outputs=1
